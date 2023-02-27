@@ -1,5 +1,5 @@
 """
-Niche - a program that finds interstitial spaces in crystals
+Niche - a program that finds interstitial spaces in crystals.
 """
 import sys
 import numpy as np
@@ -17,8 +17,17 @@ class Niche:
         Creates a list of symmetry equivalent positions for the input structure.
         The output is the same as spg.get_symmetry_dataset()['equivalent_atoms']
 
-        from pymatgen.util.testing import PymatgenTest
+        >>> from pymatgen.util.testing import PymatgenTest
+        >>> from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
         >>> st = PymatgenTest.TEST_STRUCTURES['Li10GeP2S12']
+        >>> Niche.find_equivalent_positions(st.frac_coords,st) == SpacegroupAnalyzer(st).get_symmetry_dataset()['equivalent_atoms'] # doctest: +NORMALIZE_WHITESPACE
+        array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True,  True,  True,  True,  True,  True,
+                True,  True,  True,  True])
         """
 
         lattice = host_lattice.lattice
@@ -46,7 +55,6 @@ class Niche:
                 continue
 
             for j in range(i, len(frac_coords)):
-
                 diff = pbc_shortest_vectors(
                     lattice, eq_pos[:, j, :], frac_coords[i]
                 ).squeeze()
@@ -164,6 +172,9 @@ class Niche:
         interstitial_grid : [int, int, int]
             Grid specification to give the required spacing.
 
+        >>> from pymatgen.util.testing import PymatgenTest
+        >>> Niche.spacing_to_grid(PymatgenTest.TEST_STRUCTURES['He_BCC'],1)
+        [3, 3, 3]
         """
 
         # Lattice parameters lenght
@@ -266,7 +277,6 @@ class Niche:
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Compute interstitial positions")
     parser.add_argument(
         "--spacing",
