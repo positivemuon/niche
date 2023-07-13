@@ -1,9 +1,7 @@
 """
 Niche - a program that finds interstitial spaces in crystals.
 """
-import sys
 import numpy as np
-import argparse
 
 from pymatgen.core import Structure
 from pymatgen.util.coord import pbc_shortest_vectors
@@ -274,59 +272,3 @@ class Niche:
         for p in pos:
             stc.append(self.atom, p)
         return stc
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Compute interstitial positions")
-    parser.add_argument(
-        "--spacing",
-        metavar="S",
-        type=float,
-        help="Maximum grid point spacing (Ang.)",
-        default=1.0,
-    )
-    parser.add_argument(
-        "--distance",
-        metavar="D",
-        type=float,
-        default=1.0,
-        help="Distance between interstitial grid points and lattice points (Ang.)",
-    )
-    parser.add_argument(
-        "--atom",
-        metavar="A",
-        type=str,
-        default="H",
-        help="Atom to be inserted in structures",
-    )
-    parser.add_argument(
-        "--covalent-atom",
-        metavar="C",
-        type=str,
-        default="",
-        help="Atom symbol to be cosidered for covalence radius calc.",
-    )
-    parser.add_argument(
-        "--supercell",
-        metavar="SC",
-        type=str,
-        default="1 0 0  0 1 0  0 0 1",
-        help="Supercell to be built",
-    )
-
-    parser.add_argument("input_structure")
-
-    args = parser.parse_args()
-    spacing = args.spacing
-    distance = args.distance
-    atom = args.atom
-    cov_atom = args.covalent_atom
-    sc_matrix = (
-        np.array([float(x) for x in args.supercell.split()]).reshape(-1, 3).squeeze()
-    )
-
-    # load structure with pymatgen
-    st = Structure.from_file(args.input_structure)
-
-    nc = Niche(st, atom)
-    nc.apply(spacing, distance).to(filename="positions.cif".format(i))
